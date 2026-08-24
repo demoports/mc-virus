@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#020504">
+  <link rel="icon" href="data:,">
+  <title>virus by matt current</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --acid: #b6ff4d;
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #000;
+    }
+
+    body {
+      color: #c9d3cf;
+      font: 13px/1.7 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    canvas {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #000;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      opacity: 0;
+      transition: opacity 800ms ease;
+    }
+
+    /* Match the Hplus launcher: fill the height at the demo's native aspect.
+       Portrait windows crop the sides instead of shrinking the preview. */
+    canvas.launcher {
+      inset: auto;
+      top: 0;
+      left: 50%;
+      width: auto;
+      height: 100%;
+      transform: translateX(-50%);
+    }
+
+    #ui {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      user-select: none;
+      background: radial-gradient(
+        ellipse at center,
+        rgba(0, 0, 0, .58) 0%,
+        rgba(0, 5, 2, .86) 65%,
+        rgba(0, 2, 1, .97) 100%
+      );
+      opacity: 1;
+      transition: opacity 600ms ease;
+    }
+
+    #ui.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .panel {
+      width: min(720px, 100%);
+      text-align: center;
+      text-shadow: 0 1px 16px #000;
+    }
+
+    h1 {
+      margin: 0;
+      color: #fff;
+      font-size: clamp(48px, 9vw, 112px);
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: .08em;
+      text-transform: lowercase;
+    }
+
+    .by {
+      margin-top: 14px;
+      color: #e5f3df;
+      font-size: 15px;
+      letter-spacing: .25em;
+      text-transform: lowercase;
+    }
+
+    .meta {
+      margin-top: 4px;
+      color: #84977e;
+      letter-spacing: .06em;
+    }
+
+    .credits {
+      margin-top: 22px;
+      color: #71806d;
+      font-size: 12px;
+      line-height: 1.7;
+      letter-spacing: .02em;
+    }
+
+    .credits b {
+      color: #a9b9a3;
+      font-weight: 400;
+    }
+
+    .row {
+      display: flex;
+      justify-content: center;
+      margin-top: 38px;
+    }
+
+    #go {
+      padding: 6px 2px;
+      border: 0;
+      outline: none;
+      color: #d9e8d4;
+      background: none;
+      font: inherit;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      text-decoration: underline;
+      text-decoration-color: rgba(182, 255, 77, .55);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 6px;
+      cursor: pointer;
+      transition: color 200ms ease, text-decoration-color 200ms ease;
+    }
+
+    #go:hover,
+    #go:focus-visible {
+      color: #fff;
+      text-decoration-color: var(--acid);
+    }
+
+    .controls {
+      position: absolute;
+      bottom: 22px;
+      left: 50%;
+      translate: -50% 0;
+      color: #50655d;
+      font-size: 10px;
+      letter-spacing: .15em;
+      text-align: center;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .controls kbd {
+      color: #82958f;
+      font: inherit;
+    }
+
+    .controls a {
+      display: inline-block;
+      margin-top: 6px;
+      color: #82958f;
+      text-decoration: none;
+      transition: color 200ms ease;
+    }
+
+    .controls a:hover,
+    .controls a:focus-visible {
+      color: #a9b9a3;
+    }
+
+    #status {
+      position: absolute;
+      z-index: 4;
+      left: 14px;
+      bottom: 12px;
+      color: #5b7169;
+      font: 11px/1.4 system-ui, sans-serif;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      text-shadow: 0 1px 4px #000;
+      pointer-events: none;
+    }
+
+    #status:empty { display: none; }
+
+    @media (max-width: 620px) {
+      #ui { padding: 20px; }
+      h1 { font-size: clamp(52px, 20vw, 88px); }
+      .credits { font-size: 11px; }
+      .controls {
+        width: calc(100% - 32px);
+        bottom: 17px;
+        font-size: 8px;
+        letter-spacing: .1em;
+        white-space: normal;
+      }
+    }
+
+    @media (max-height: 520px) {
+      h1 { font-size: clamp(46px, 18vh, 72px); }
+      .by { margin-top: 8px; }
+      .credits { margin-top: 12px; }
+      .row { margin-top: 18px; }
+      .controls { bottom: 9px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      canvas,
+      #ui { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="c" aria-label="mc-virus demo output"></canvas>
+
+  <div id="ui">
+    <main class="panel">
+      <h1>virus</h1>
+      <div class="by">matt current</div>
+      <div class="meta">game boy advance demo · tum 2004</div>
+      <div class="credits">
+        code + graphics <b>annieeee</b><br>
+        graphics <b>dodke</b> &nbsp;·&nbsp; music <b>rjv</b>
+      </div>
+      <div class="row"><button id="go" type="button">start</button></div>
+    </main>
+
+    <div class="controls">
+      <kbd>space</kbd> pause &nbsp;·&nbsp; <kbd>← →</kbd> seek &nbsp;·&nbsp;
+      <kbd>f</kbd> fullscreen &nbsp;·&nbsp; <kbd>esc</kbd> exit<br>
+      <a href="https://github.com/demoports/mc-virus" target="_blank" rel="noopener noreferrer">github</a>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <script type="module" src="mcvirus_app.js"></script>
+</body>
+</html>
