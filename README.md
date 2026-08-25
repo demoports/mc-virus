@@ -16,7 +16,8 @@ the page.
 
 | file | purpose |
 |---|---|
-| `index.html` | fixed 240x160 canvas, embedded launcher styles, and ES-module entry point |
+| `index.html` | fixed 240x160 canvas, static launcher styling, and ES-module entry point |
+| `launcher.png` | native-resolution still used as the responsive launcher backdrop |
 | `mcvirus_app.js` | launcher UI, keyboard controls, and compatibility globals |
 | `mcvirus.js` | public module API, audio-clocked frame loop, and validation entry point |
 | `mcvirus_constants.js` | shared display, timing, and sample-rate constants |

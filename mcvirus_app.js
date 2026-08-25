@@ -1,8 +1,6 @@
 // Browser launcher and keyboard controls. Runtime code lives in mcvirus.js;
 // this module is the only place that deliberately exposes compatibility hooks.
-import MCVirus, { preview, start } from './mcvirus.js';
-
-const LAUNCHER_PREVIEW_SECONDS = 162.71;
+import MCVirus, { start } from './mcvirus.js';
 
 const canvas = document.getElementById('c');
 const ui = document.getElementById('ui');
@@ -57,12 +55,8 @@ function unlockScreen() {
 
 function showLauncher() {
   ui.classList.remove('hidden');
-  canvas.classList.add('launcher');
+  canvas.style.opacity = '0';
   setStatus('');
-  preview(canvas, LAUNCHER_PREVIEW_SECONDS, (error) => {
-    if (error) setStatus(error.message || String(error));
-    if (!app) canvas.style.opacity = '1';
-  });
 }
 
 function restoreLauncherAfterError(error) {
@@ -70,14 +64,12 @@ function restoreLauncherAfterError(error) {
   setApp(null);
   unlockScreen();
   ui.classList.remove('hidden');
-  canvas.classList.add('launcher');
-  canvas.style.opacity = '1';
+  canvas.style.opacity = '0';
 }
 
 function begin() {
   if (app) return;
   ui.classList.add('hidden');
-  canvas.classList.remove('launcher');
   canvas.style.opacity = '1';
 
   try {

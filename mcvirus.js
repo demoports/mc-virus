@@ -20,7 +20,6 @@ import { AudioPlayer } from './mcvirus_audio.js';
 
 const LITTLE_ENDIAN = new Uint8Array(new Uint32Array([0x0a0b0c0d]).buffer)[0] === 0x0d;
 const runtimes = new WeakMap();
-let previewGeneration = 0;
 
 function resolveCanvas(value) {
   if (typeof value === 'string' && typeof document !== 'undefined') {
@@ -102,31 +101,12 @@ function renderSeconds(runtime, seconds, force) {
   return framebuffer;
 }
 
-// Render a live frame behind the launcher. It uses the same ROM assets and
-// Canvas2D path as playback, but never constructs an AudioContext.
-export function preview(canvas, seconds, done) {
-  const generation = ++previewGeneration;
-  return runtimeFor(canvas).then((runtime) => {
-    if (generation !== previewGeneration) return null;
-    const framebuffer = renderSeconds(runtime, seconds, true);
-    if (done) done(null, framebuffer);
-    return framebuffer;
-  }).catch((error) => {
-    if (done) done(error);
-    else console.error(error);
-    return null;
-  });
-}
-
-export function cancelPreview() { ++previewGeneration; }
-
 // options.onStart(app), options.onEnd(natural), options.onError(error), and
 // options.onTime(seconds, duration, paused) are all optional. The returned
 // controller is immediate, allowing Escape to cancel while assets decode.
 export function start(canvas, setStatus, options = {}) {
   canvas = resolveCanvas(canvas);
   const status = typeof setStatus === 'function' ? setStatus : () => {};
-  cancelPreview();
 
   let running = true;
   let loaded = false;
@@ -298,8 +278,6 @@ const MCVirus = Object.freeze({
   base64Bytes,
   loadAssets,
   syncAt,
-  preview,
-  cancelPreview,
   start,
   validation,
 });
