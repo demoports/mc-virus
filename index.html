@@ -127,22 +127,28 @@
       border: 0;
       outline: none;
       color: #d9e8d4;
-      background: none;
+      background: transparent;
       font: inherit;
       letter-spacing: .18em;
       text-transform: uppercase;
       text-decoration: underline;
       text-decoration-color: rgba(182, 255, 77, .55);
       text-decoration-thickness: 1px;
-      text-underline-offset: 6px;
+      text-underline-offset: 7px;
       cursor: pointer;
       transition: color 200ms ease, text-decoration-color 200ms ease;
     }
 
-    #go:hover,
-    #go:focus-visible {
+    #go:not(:disabled):hover,
+    #go:not(:disabled):focus-visible {
       color: #fff;
       text-decoration-color: var(--acid);
+    }
+
+    #go:disabled {
+      color: #71806d;
+      cursor: progress;
+      text-decoration: none;
     }
 
     .controls {
