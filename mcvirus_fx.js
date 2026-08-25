@@ -430,7 +430,9 @@ export class Effects {
     this.fb.clear(this.darkestIndex('scene3texture.pal'));
     this.fb.setPalette(this.palette('scene3texture.pal'));
     this.setSceneTexture('scene3texture', true);
-    this.renderer.setRoll(sin14(f * 0x1c) * 6);
+    // Native code adds f*0x1c as a byte offset into an s16 sine table,
+    // making its logical table index f*0x0e.
+    this.renderer.setRoll(sinI(f * 0x0e) * 6);
     this.setCamera(state.subpart === 0 ? 'scene30.cam' : 'scene31.cam', f * 0x0d);
     this.draw('scene30', 2, 6);
 
