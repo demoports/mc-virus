@@ -110,7 +110,7 @@ addEventListener('keydown', (event) => {
     return;
   }
 
-  if ((event.key === 'Enter' || event.key === ' ') && !app) {
+  if (event.key === ' ' && !app) {
     event.preventDefault();
     begin();
   } else if (event.key === ' ' && app) {
